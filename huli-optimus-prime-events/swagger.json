@@ -1,483 +1,730 @@
-swagger: "2.0"
-info:
-  description: "This is the API specification of the Student Management Backend - Event Service project of Green Fox Academy's Húlí. Find the [project description here](https://github.com/greenfox-academy/Huli/blob/master/projects/student-management-event-service.md)."
-  version: "1.0.0"
-  title: "Optimus Prime - Event Service"
-  contact:
-    email: "peter.tamas@greenfoxacademy.com"
-host: "dunnoyet.com"
-basePath: "/"
-tags:
-- name: "events"
-  description: "Events"
-- name: "templates"
-  description: "Templates"
-schemes:
-- "http"
-paths:
-  /events:
-    get:
-      tags:
-      - "events"
-      summary: "Get events"
-      description: "Get events description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "cohort"
-        in: "query"
-        description: "Cohort filter"
-        required: false
-        type: "string"
-      - name: "course"
-        in: "query"
-        description: "Course filter"
-        required: false
-        type: "string"
-      - name: "team"
-        in: "query"
-        description: "Class or project team filter"
-        required: false
-        type: "string"
-      - name: "from"
-        in: "query"
-        description: "Start date of filtering events"
-        required: false
-        type: "string"
-        format: "date"
-      - name: "end"
-        in: "query"
-        description: "End date of filtering events"
-        required: false
-        type: "string"
-        format: "date"
-      responses:
-        200:
-          description: "success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Event"
-    post:
-      tags:
-      - "events"
-      summary: "Create a new event"
-      description: "Post an event description"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        description: "The new event"
-        required: true
-        schema:
-          $ref: "#/definitions/NewEvent"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-  /events/{eventId}:
-    get:
-      tags:
-      - "events"
-      summary: "Get an event"
-      description: "Get an event description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/Event"
-    put:
-      tags:
-      - "events"
-      summary: "Modify an event"
-      description: "Modify an event description"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      - in: "body"
-        name: "body"
-        description: "The modified event"
-        required: true
-        schema:
-          $ref: "#/definitions/NewEvent"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-    delete:
-      tags:
-      - "events"
-      summary: "Delete an event"
-      description: "Delete an event description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-  /events/{eventId}/guests:
-    get:
-      tags:
-      - "events"
-      summary: "Get event guests"
-      description: "Get event guests description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/Guest"
-    post:
-      tags:
-      - "events"
-      summary: "Add a new guest to the event"
-      description: "New guest description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      - name: "body"
-        in: "body"
-        description: "The new guest"
-        required: true
-        schema:
-          $ref: "#/definitions/NewGuest"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-  /events/{eventId}/guests/{guestId}:
-    delete:
-      tags:
-      - "events"
-      summary: "Remove a guest"
-      description: "Remove a guest description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "eventId"
-        in: "path"
-        description: "The ID of the event"
-        required: true
-        type: "integer"
-      - name: "guestId"
-        in: "path"
-        description: "The ID of the guest"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-  /templates:
-    get:
-      tags:
-      - "templates"
-      summary: "Get the template of the given type"
-      description: "Get templates description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "templateType"
-        in: "query"
-        description: "The name of the template (e.g.: cohort, course, class, ...)"
-        required: true
-        type: "string"
-      responses:
-        200:
-          description: "success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/TemplateEvent"
-    post:
-      tags:
-      - "templates"
-      summary: "Add a new template event to template"
-      description: "Add new template event description"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "body"
-        in: "body"
-        description: "The new template event"
-        required: true
-        schema:
-          $ref: "#/definitions/NewTemplateEvent"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-  /templates/{templateEventId}:
-    get:
-      tags:
-      - "templates"
-      summary: "Get an event template"
-      description: "Get an event template description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "templateEventId"
-        in: "path"
-        description: "The ID of the template event"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/TemplateEvent"
-    put:
-      tags:
-      - "templates"
-      summary: "Modify an event template"
-      description: "Modify an event template description"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "templateEventId"
-        in: "path"
-        description: "The ID of the template event"
-        required: true
-        type: "integer"
-      - name: "body"
-        in: "body"
-        description: "The new event template"
-        required: true
-        schema:
-          $ref: "#/definitions/NewTemplateEvent"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/RespDTO"
-    delete:
-      tags:
-      - "templates"
-      summary: "Delete an event template"
-      description: "Delete an event template description"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "templateEventId"
-        in: "path"
-        description: "The ID of the template event"
-        required: true
-        type: "integer"
-      responses:
-        200:
-          description: "success"
-          schema:
-            $ref: "#/definitions/TemplateEvent"
-  /templates/types:
-    get:
-      tags:
-      - "templates"
-      summary: "Get all the template types"
-      description: "Get template types description"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "success"
-          schema:
-            type: "array"
-            items:
-              $ref: "#/definitions/TemplateType"
-securityDefinitions:
-  petstore_auth:
-    type: "oauth2"
-    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
-    flow: "implicit"
-    scopes:
-      write:pets: "modify pets in your account"
-      read:pets: "read your pets"
-  api_key:
-    type: "apiKey"
-    name: "api_key"
-    in: "header"
-definitions:
-  TemplateEvent:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-      eventName:
-        type: "string"
-      templateType:
-        $ref: "#/definitions/TemplateType"
-      weekNum:
-        type: "integer"
-      day:
-        type: "integer"
-      startsAt:
-        $ref: "#/definitions/EventTime"
-      endsAt:
-        $ref: "#/definitions/EventTime"
-      relevantCourses:
-        type: "array"
-        items:
-          $ref: "#/definitions/Course"
-  NewTemplateEvent:
-    type: "object"
-    properties:
-      eventName:
-        type: "string"
-      templateTypeId:
-        type: "integer"
-      weekNum:
-        type: "integer"
-      day:
-        type: "integer"
-      startsAt:
-        $ref: "#/definitions/EventTime"
-      endsAt:
-        $ref: "#/definitions/EventTime"
-      relevantCourseIds:
-        type: "array"
-        items:
-          type: "integer"
-  TemplateType:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-      templateType:
-        type: "string"
-      elements:
-        type: "array"
-        items:
-          $ref: "#/definitions/TemplateTypeElement"
-  TemplateTypeElement:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-      name:
-        type: "string"
-  Course:
-    type: "object"
-    properties:
-      id:
-        type: "integer"
-      courseName:
-        type: "string"
-  Event:
-    type: "object"
-    properties:
-      id:
-        type: "number"
-      eventName:
-        type: "string"
-      startsAt:
-        $ref: "#/definitions/EventTime"
-      endsAt:
-        $ref: "#/definitions/EventTime"
-      calendarId:
-        type: "string"
-      guests:
-        type: "array"
-        items:
-          $ref: "#/definitions/Guest"
-  NewEvent:
-    type: "object"
-    properties:
-      eventName:
-        type: "string"
-      startsAt:
-        $ref: "#/definitions/EventTime"
-      endsAt:
-        $ref: "#/definitions/EventTime"
-      calendarId:
-        type: "string"
-  EventTime:
-    type: "object"
-    properties:
-      dateTime:
-        type: "string"
-        format: "datetime"
-      timeZone:
-        type: "string"
-  Calendar:
-    type: "object"
-    properties:
-      id:
-        type: "string"
-      calendarName:
-        type: "string"
-  Guest:
-    type: "object"
-    properties:
-      id:
-        type: "number"
-      name:
-        type: "string"
-      calendarAddress:
-        type: "string"
-        format: "email"
-      responseStatus:
-        type: "string"
-        enum:
-        - "needsAction"
-        - "yes"
-        - "no"
-        - "maybe"
-  NewGuest:
-    type: "object"
-    properties:
-      guestId:
-        type: "number"
-  RespDTO:
-    type: "object"
-    properties:
-      status:
-        type: "integer"
-      message:
-        type: "string"
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "This is the API specification of the Student Management Backend - Event Service project of Green Fox Academy's Húlí. Find the [project description here](https://github.com/greenfox-academy/Huli/blob/master/projects/student-management-event-service.md).",
+    "version": "1.0.0",
+    "title": "Optimus Prime - Event Service",
+    "contact": {
+      "email": "peter.tamas@greenfoxacademy.com"
+    }
+  },
+  "host": "dunnoyet.com",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "events",
+      "description": "Events"
+    },
+    {
+      "name": "templates",
+      "description": "Templates"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/events": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get events",
+        "description": "Get events description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "cohort",
+            "in": "query",
+            "description": "Cohort filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "course",
+            "in": "query",
+            "description": "Course filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "team",
+            "in": "query",
+            "description": "Class or project team filter",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "description": "Start date of filtering events",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "description": "End date of filtering events",
+            "required": false,
+            "type": "string",
+            "format": "date"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Event"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Create a new event",
+        "description": "Post an event description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The new event",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      }
+    },
+    "/events/{eventId}": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get an event",
+        "description": "Get an event description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/Event"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Modify an event",
+        "description": "Modify an event description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "The modified event",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Delete an event",
+        "description": "Delete an event description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      }
+    },
+    "/events/{eventId}/guests": {
+      "get": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Get event guests",
+        "description": "Get event guests description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Guest"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Add a new guest to the event",
+        "description": "New guest description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The new guest",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewGuest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      }
+    },
+    "/events/{eventId}/guests/{guestId}": {
+      "delete": {
+        "tags": [
+          "events"
+        ],
+        "summary": "Remove a guest",
+        "description": "Remove a guest description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "eventId",
+            "in": "path",
+            "description": "The ID of the event",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "guestId",
+            "in": "path",
+            "description": "The ID of the guest",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      }
+    },
+    "/templates": {
+      "get": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Get the template of the given type",
+        "description": "Get templates description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "templateType",
+            "in": "query",
+            "description": "The name of the template (e.g.: cohort, course, class, ...)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TemplateEvent"
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Add a new template event to template",
+        "description": "Add new template event description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The new template event",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewTemplateEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      }
+    },
+    "/templates/{templateEventId}": {
+      "get": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Get an event template",
+        "description": "Get an event template description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "templateEventId",
+            "in": "path",
+            "description": "The ID of the template event",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/TemplateEvent"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Modify an event template",
+        "description": "Modify an event template description",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "templateEventId",
+            "in": "path",
+            "description": "The ID of the template event",
+            "required": true,
+            "type": "integer"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The new event template",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewTemplateEvent"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/RespDTO"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Delete an event template",
+        "description": "Delete an event template description",
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "templateEventId",
+            "in": "path",
+            "description": "The ID of the template event",
+            "required": true,
+            "type": "integer"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "$ref": "#/definitions/TemplateEvent"
+            }
+          }
+        }
+      }
+    },
+    "/templates/types": {
+      "get": {
+        "tags": [
+          "templates"
+        ],
+        "summary": "Get all the template types",
+        "description": "Get template types description",
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TemplateType"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "petstore_auth": {
+      "type": "oauth2",
+      "authorizationUrl": "http://petstore.swagger.io/oauth/dialog",
+      "flow": "implicit",
+      "scopes": {
+        "write:pets": "modify pets in your account",
+        "read:pets": "read your pets"
+      }
+    },
+    "api_key": {
+      "type": "apiKey",
+      "name": "api_key",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "TemplateEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "eventName": {
+          "type": "string"
+        },
+        "templateType": {
+          "$ref": "#/definitions/TemplateType"
+        },
+        "weekNum": {
+          "type": "integer"
+        },
+        "day": {
+          "type": "integer"
+        },
+        "startsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "endsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "relevantCourses": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Course"
+          }
+        }
+      }
+    },
+    "NewTemplateEvent": {
+      "type": "object",
+      "properties": {
+        "eventName": {
+          "type": "string"
+        },
+        "templateTypeId": {
+          "type": "integer"
+        },
+        "weekNum": {
+          "type": "integer"
+        },
+        "day": {
+          "type": "integer"
+        },
+        "startsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "endsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "relevantCourseIds": {
+          "type": "array",
+          "items": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "TemplateType": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "templateType": {
+          "type": "string"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/TemplateTypeElement"
+          }
+        }
+      }
+    },
+    "TemplateTypeElement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "name": {
+          "type": "string"
+        }
+      }
+    },
+    "Course": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "courseName": {
+          "type": "string"
+        }
+      }
+    },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "eventName": {
+          "type": "string"
+        },
+        "startsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "endsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "calendarId": {
+          "type": "string"
+        },
+        "guests": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Guest"
+          }
+        }
+      }
+    },
+    "NewEvent": {
+      "type": "object",
+      "properties": {
+        "eventName": {
+          "type": "string"
+        },
+        "startsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "endsAt": {
+          "$ref": "#/definitions/EventTime"
+        },
+        "calendarId": {
+          "type": "string"
+        }
+      }
+    },
+    "EventTime": {
+      "type": "object",
+      "properties": {
+        "dateTime": {
+          "type": "string",
+          "format": "datetime"
+        },
+        "timeZone": {
+          "type": "string"
+        }
+      }
+    },
+    "Calendar": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "calendarName": {
+          "type": "string"
+        }
+      }
+    },
+    "Guest": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "number"
+        },
+        "name": {
+          "type": "string"
+        },
+        "calendarAddress": {
+          "type": "string",
+          "format": "email"
+        },
+        "responseStatus": {
+          "type": "string",
+          "enum": [
+            "needsAction",
+            "yes",
+            "no",
+            "maybe"
+          ]
+        }
+      }
+    },
+    "NewGuest": {
+      "type": "object",
+      "properties": {
+        "guestId": {
+          "type": "number"
+        }
+      }
+    },
+    "RespDTO": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
