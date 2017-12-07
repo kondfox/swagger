@@ -475,7 +475,7 @@
         "id": {
           "type": "integer"
         },
-        "templateType": {
+        "name": {
           "type": "string"
         }
       }
