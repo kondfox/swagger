@@ -432,10 +432,10 @@
         "templateType": {
           "type": "string"
         },
-        "weekNum": {
+        "weekNumBer": {
           "type": "integer"
         },
-        "day": {
+        "dayNumber": {
           "type": "integer"
         },
         "startsAt": {
@@ -455,10 +455,10 @@
         "templateTypeId": {
           "type": "integer"
         },
-        "weekNum": {
+        "weekNumber": {
           "type": "integer"
         },
-        "day": {
+        "dayNumber": {
           "type": "integer"
         },
         "startsAt": {
@@ -529,7 +529,7 @@
         }
       }
     },
-    "RespDTO": {
+    "ResponseDTO": {
       "type": "object",
       "properties": {
         "status": {
